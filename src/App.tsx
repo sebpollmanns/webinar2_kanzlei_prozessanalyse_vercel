@@ -3,13 +3,6 @@ import { BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiu
 import { Clock, TrendingUp, AlertCircle, Mic, FileText, BarChart3, ArrowRight, ChevronDown, ChevronRight, Info, Plus, Trash2, HelpCircle } from 'lucide-react';
 
 const TaxProcessAnalyzer = () => {
-  // ... HIER DEN KOMPLETTEN CODE EINFÜGEN
-
-import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Clock, TrendingUp, AlertCircle, Mic, FileText, BarChart3, ArrowRight, ChevronDown, ChevronRight, Info, Plus, Trash2, HelpCircle } from 'lucide-react';
-
-const TaxProcessAnalyzer = () => {
   const [currentStep, setCurrentStep] = useState('welcome');
   const [inputMethod, setInputMethod] = useState(null);
   const [hierarchy, setHierarchy] = useState(null);
@@ -392,16 +385,14 @@ const TaxProcessAnalyzer = () => {
     setExpandedItems(prev => ({ ...prev, [key]: true }));
   };
 
-  const addNewCategory = (area) => {
-    const categoryName = newCategoryText[area];
-    
-    if (!categoryName || !categoryName.trim()) return;
+  const handleAddCategoryFromModal = () => {
+    if (!newCategoryName || !newCategoryName.trim() || !addCategoryArea) return;
     
     setHierarchy(prev => {
       const newHierarchy = JSON.parse(JSON.stringify(prev));
       
-      newHierarchy[area].categories[categoryName] = {
-        name: categoryName,
+      newHierarchy[addCategoryArea].categories[newCategoryName] = {
+        name: newCategoryName,
         benchmark: 0,
         ist: 0,
         description: '',
@@ -412,10 +403,12 @@ const TaxProcessAnalyzer = () => {
       return newHierarchy;
     });
     
-    setNewCategoryText(prev => ({ ...prev, [area]: '' }));
-    
-    const pathKey = `${area}_${categoryName}`;
+    const pathKey = `${addCategoryArea}_${newCategoryName}`;
     setExpandedItems(prev => ({ ...prev, [pathKey]: true }));
+    
+    setNewCategoryName('');
+    setAddCategoryModalOpen(false);
+    setAddCategoryArea(null);
   };
 
   const exportData = () => {
@@ -503,33 +496,7 @@ const TaxProcessAnalyzer = () => {
     }
   };
 
-  const handleAddCategoryFromModal = () => {
-    if (!newCategoryName || !newCategoryName.trim() || !addCategoryArea) return;
-    
-    setHierarchy(prev => {
-      const newHierarchy = JSON.parse(JSON.stringify(prev));
-      
-      newHierarchy[addCategoryArea].categories[newCategoryName] = {
-        name: newCategoryName,
-        benchmark: 0,
-        ist: 0,
-        description: '',
-        children: {},
-        isCustom: true
-      };
-      
-      return newHierarchy;
-    });
-    
-    const pathKey = `${addCategoryArea}_${newCategoryName}`;
-    setExpandedItems(prev => ({ ...prev, [pathKey]: true }));
-    
-    setNewCategoryName('');
-    setAddCategoryModalOpen(false);
-    setAddCategoryArea(null);
-  };
-
-  const renderItem = (item, area, catKey, path = [], level = 3) => {
+ const renderItem = (item, area, catKey, path = [], level = 3) => {
     const itemPath = [...path, item.name];
     const pathKey = `${area}_${catKey}_${itemPath.join('_')}`;
     const isExpanded = expandedItems[pathKey];
@@ -1069,7 +1036,7 @@ const TaxProcessAnalyzer = () => {
           </div>
         )}
 
-        {currentStep === 'input' && inputMethod === 'manual' && (
+{currentStep === 'input' && inputMethod === 'manual' && (
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <div className="flex items-center justify-between mb-3">
@@ -1777,7 +1744,7 @@ const TaxProcessAnalyzer = () => {
         </div>
       )}
 
-      {addCategoryModalOpen && (
+{addCategoryModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
             <div className="px-6 py-4 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-slate-50">
@@ -2012,11 +1979,6 @@ const TaxProcessAnalyzer = () => {
       `}</style>
     </div>
   );
-};
-
-export default TaxProcessAnalyzer;
-
-  
 };
 
 export default TaxProcessAnalyzer;
